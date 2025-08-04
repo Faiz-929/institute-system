@@ -14,7 +14,6 @@ Route::middleware(['auth'])->group(function () {
     // Route::get('/dashboard', function () {
     //     return view('dashboard');
     // })->name('dashboard');
-    // test
 
     Route::get('/dashboard', function () {
     $teachersCount = Teacher::count();
