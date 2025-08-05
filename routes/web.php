@@ -9,6 +9,9 @@ use App\Models\Teacher;
 Route::get('/', function () {
     return view ('welcome');
 });
+Route::get('/', function () {
+    return view ('test');
+});
 
 Route::middleware(['auth'])->group(function () {
     // Route::get('/dashboard', function () {
