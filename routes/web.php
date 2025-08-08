@@ -14,6 +14,7 @@ Route::middleware(['auth'])->group(function () {
     // Route::get('/dashboard', function () {
     //     return view('dashboard');
     // })->name('dashboard');
+    // تجربة
     Route::get('/dashboard', function () {
     $teachersCount = Teacher::count();
     $latestTeachers = Teacher::latest()->take(5)->get();
