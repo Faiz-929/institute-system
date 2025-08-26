@@ -26,7 +26,7 @@
                     ➕ إضافة معلم
                 </a>
 
-                <a href="{{ route('profile.edit') }}"
+                {{-- <a href="{{ route('profile.edit') }}"
                    class="bg-yellow-100 hover:bg-yellow-200 transition rounded-xl p-5 shadow text-yellow-800 font-semibold">
                     ⚙️ تعديل الملف الشخصي
                 </a>
@@ -37,7 +37,7 @@
                         class="w-full bg-red-100 hover:bg-red-200 transition rounded-xl p-5 shadow text-red-800 font-semibold text-right">
                         🚪 تسجيل الخروج
                     </button>
-                </form>
+                </form> --}}
 
             </div>
 
