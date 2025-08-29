@@ -5,9 +5,21 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TeacherController;
 use App\Http\Controllers\StudentController;
 use App\Models\Teacher;
+use Spatie\Health\Http\Controllers\HealthCheckResultsController;
+use Spatie\Health\Models\HealthCheckResultHistoryItem;
 
 Route::get('/', function () {
     return view('welcome'); // الصفحة الرئيسية
+});
+Route::get('/health', HealthCheckResultsController::class);
+Route::get('/my-health', function () {
+    $result = HealthCheckResultHistoryItem::latest()->first();
+
+    if (! $result) {
+        return '🚫 لا توجد نتائج حتى الآن، جرّب تشغيل: php artisan health:check';
+    }
+
+    return view('my-health', ['result' => $result]);
 });
 
 Route::middleware(['auth'])->group(function () {

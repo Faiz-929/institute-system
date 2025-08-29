@@ -17,9 +17,11 @@
             </div>
         @endif
 
-        <form action="{{ route('students.store') }}" method="POST" enctype="multipart/form-data" class="bg-white p-6 rounded shadow space-y-4 text-right">
+        <form action="{{ route('students.store') }}" method="POST" enctype="multipart/form-data" 
+              class="bg-white p-6 rounded shadow space-y-4 text-right">
             @csrf
 
+            {{-- ✅ بيانات الطالب --}}
             <div>
                 <label class="block mb-1 font-semibold">اسم الطالب</label>
                 <input type="text" name="name" value="{{ old('name') }}" required
@@ -28,13 +30,11 @@
 
             <div>
                 <label class="block mb-1 font-semibold">الحالة</label>
-                {{-- <input type="text" name="status" value="{{ old('status') }}"
-                       class="w-full border rounded px-3 py-2" placeholder="منتظم، منقطع..." /> --}}
-                 <select name="gender" class="w-full border rounded px-3 py-2">
+                <select name="status" class="w-full border rounded px-3 py-2">
                     <option value="">اختر الحالة</option>
                     <option value="منتظم" {{ old('status') == 'منتظم' ? 'selected' : '' }}>منتظم</option>
                     <option value="منقطع" {{ old('status') == 'منقطع' ? 'selected' : '' }}>منقطع</option>
-                 </select>      
+                </select>
             </div>
 
             <div>
@@ -92,6 +92,42 @@
                 <textarea name="notes" rows="3" class="w-full border rounded px-3 py-2">{{ old('notes') }}</textarea>
             </div>
 
+            {{-- ✅ بيانات ولي الأمر --}}
+            <div class="border-t pt-4">
+                <h3 class="font-bold text-lg mb-3">بيانات ولي الأمر</h3>
+
+                <div>
+                    <label class="block mb-1 font-semibold">اسم ولي الأمر الرباعي</label>
+                    <input type="text" name="parent_name" value="{{ old('parent_name') }}"
+                           class="w-full border rounded px-3 py-2" />
+                </div>
+
+                <div>
+                    <label class="block mb-1 font-semibold">رقم الجوال</label>
+                    <input type="text" name="parent_mobile" value="{{ old('parent_mobile') }}"
+                           class="w-full border rounded px-3 py-2" />
+                </div>
+
+                <div>
+                    <label class="block mb-1 font-semibold">رقم الواتس</label>
+                    <input type="text" name="parent_whatsapp" value="{{ old('parent_whatsapp') }}"
+                           class="w-full border rounded px-3 py-2" />
+                </div>
+
+                <div>
+                    <label class="block mb-1 font-semibold">رقم البيت</label>
+                    <input type="text" name="parent_home_phone" value="{{ old('parent_home_phone') }}"
+                           class="w-full border rounded px-3 py-2" />
+                </div>
+
+                <div>
+                    <label class="block mb-1 font-semibold">الوظيفة</label>
+                    <input type="text" name="parent_job" value="{{ old('parent_job') }}"
+                           class="w-full border rounded px-3 py-2" />
+                </div>
+            </div>
+
+            {{-- ✅ الأزرار --}}
             <div class="flex justify-end space-x-2">
                 <a href="{{ route('students.index') }}"
                    class="px-4 py-2 rounded bg-gray-300 hover:bg-gray-400">إلغاء</a>

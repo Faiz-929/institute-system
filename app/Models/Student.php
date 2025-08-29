@@ -20,5 +20,11 @@ class Student extends Model
         'level',
         'major',
         'notes',
+         // ✅ الحقول الجديدة
+        'parent_name',
+        'parent_mobile',
+        'parent_whatsapp',
+        'parent_home_phone',
+        'parent_job',
     ];
 }
