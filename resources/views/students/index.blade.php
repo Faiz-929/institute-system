@@ -13,12 +13,64 @@
             </div>
         @endif
 
+        {{-- أزرار البحث والفلترة --}}
+        <div class="bg-white p-4 rounded shadow mb-4">
+            <form method="GET" action="{{ route('students.index') }}" class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end text-right">
+                
+                {{-- البحث --}}
+                <div>
+                    <label class="block mb-1 font-semibold">🔍 بحث</label>
+                    <input type="text" name="search" value="{{ request('search') }}" placeholder="ابحث باسم الطالب أو ولي الأمر"
+                           class="w-full border rounded px-3 py-2">
+                </div>
+
+                {{-- فلترة حسب التخصص --}}
+                <div>
+                    <label class="block mb-1 font-semibold">📘 التخصص</label>
+                    <select name="major" class="w-full border rounded px-3 py-2">
+                        <option value="">الكل</option>
+                        <option value="كهرباء عام" {{ request('major') == 'كهرباء عام' ? 'selected' : '' }}>كهرباء عام</option>
+                        <option value="تبريد وتكييف" {{ request('major') == 'تبريد وتكييف' ? 'selected' : '' }}>تبريد وتكييف</option>
+                        <option value="كهرباء سيارات" {{ request('major') == 'كهرباء سيارات' ? 'selected' : '' }}>كهرباء سيارات</option>
+                    </select>
+                </div>
+
+                {{-- فلترة حسب المستوى --}}
+                <div>
+                    <label class="block mb-1 font-semibold">🎓 المستوى</label>
+                    <select name="level" class="w-full border rounded px-3 py-2">
+                        <option value="">الكل</option>
+                        <option value="أولى" {{ request('level') == 'أولى' ? 'selected' : '' }}>أولى</option>
+                        <option value="ثانية" {{ request('level') == 'ثانية' ? 'selected' : '' }}>ثانية</option>
+                        <option value="ثالثة" {{ request('level') == 'ثالثة' ? 'selected' : '' }}>ثالثة</option>
+                    </select>
+                </div>
+
+                {{-- زر البحث والطباعة --}}
+                <div class="flex gap-2">
+                    <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+                        🔎 تطبيق
+                    </button>
+                    <a href="{{ route('students.index') }}" class="px-4 py-2 bg-gray-400 text-white rounded hover:bg-gray-500">
+                        🔄 إعادة
+                    </a>
+                    <a href="{{ route('students.print', request()->query()) }}" target="_blank"
+   class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">
+   🖨️ طباعة
+</a>
+
+                </div>
+            </form>
+        </div>
+
+        {{-- زر إضافة طالب --}}
         <div class="flex justify-between mb-4">
             <a href="{{ route('students.create') }}" class="bg-green-500 hover:bg-blue-600 text-white px-4 py-2 rounded">
                 ➕ إضافة طالب جديد
             </a>
         </div>
 
+        {{-- الجدول --}}
         <div class="overflow-x-auto bg-white shadow rounded-lg">
             <table class="min-w-full text-right">
                 <thead class="bg-gray-100 border-b">
@@ -51,30 +103,15 @@
                         <td class="px-4 py-2">{{ $student->gender }}</td>
                         <td class="px-4 py-2">{{ $student->level }}</td>
                         <td class="px-4 py-2">{{ $student->major }}</td>
-                        <td class="px-4 py-2">{{ $student->mobile_phone }}</td>
+                        <td class="px-4 py-2">{{ $student->parent_mobile }}</td>
                         <td class="px-4 py-2">{{ $student->home_phone }}</td>
-                        <td class="px-4 py-2 space-x-2 whitespace-nowrap flex items-center gap-2">
-                            {{-- زر عرض --}}
-                            <a href="{{ route('students.show', $student) }}" 
-                               class="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700">
-                                عرض
-                            </a>
-
-                            {{-- زر تعديل --}}
-                            <a href="{{ route('students.edit', $student) }}" 
-                               class="bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700">
-                                تعديل
-                            </a>
-
-                            {{-- زر حذف --}}
-                            <form action="{{ route('students.destroy', $student) }}" method="POST" class="inline-block" 
-                                  onsubmit="return confirm('هل أنت متأكد من حذف هذا الطالب؟');">
+                        <td class="px-4 py-2 space-x-2 whitespace-nowrap">
+                            <a href="{{ route('students.show', $student) }}" class="bg-blue-600 text-white py-1 px-3 rounded hover:bg-blue-700">👁️ عرض</a>
+                            <a href="{{ route('students.edit', $student) }}" class="bg-green-600 text-white py-1 px-3 rounded hover:bg-green-700">✏️ تعديل</a>
+                            <form action="{{ route('students.destroy', $student) }}" method="POST" class="inline-block" onsubmit="return confirm('هل أنت متأكد من حذف هذا الطالب؟');">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" 
-                                        class="bg-red-600 text-white py-2 px-4 rounded hover:bg-red-700">
-                                    حذف
-                                </button>
+                                <button type="submit" class="bg-red-600 text-white py-1 px-3 rounded hover:bg-red-700">🗑️ حذف</button>
                             </form>
                         </td>
                     </tr>
@@ -86,7 +123,6 @@
                 </tbody>
             </table>
         </div>
-
         <div class="mt-4">
             {{ $students->links() }}
         </div>

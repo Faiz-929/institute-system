@@ -36,10 +36,15 @@ Route::middleware(['auth'])->group(function () {
     // المسارات الخاصة بالمعلمين (CRUD)
     Route::resource('teachers', TeacherController::class);
 
+    // المسار الخاص بطباعة الطلاب
+
+    Route::get('students/print', [StudentController::class, 'print'])->name('students.print');
+
     // المسارات الخاصة بالطلاب (CRUD)
     Route::resource('students', StudentController::class);
 
-    // ✅ تم حذف أي روابط تخص الحصص أو الحضور/الغياب
+    
+
 });
 
 // إدارة الملف الشخصي للمستخدم

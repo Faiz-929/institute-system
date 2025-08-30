@@ -8,12 +8,38 @@ use Illuminate\Support\Facades\Storage;
 
 class StudentController extends Controller
 {
-    // عرض قائمة الطلاب
-    public function index()
-    {
-        $students = Student::latest()->paginate(10);
-        return view('students.index', compact('students'));
+    // عرض قائمة الطلاب مع البحث والفلترة
+public function index(Request $request)
+{
+    // نبدأ بكويري فاضي على جدول الطلاب
+    $query = Student::query();
+
+    // 🔍 البحث باسم الطالب أو اسم ولي الأمر
+    if ($request->filled('search')) {
+        $query->where(function($q) use ($request) {
+            $q->where('name', 'like', "%{$request->search}%")
+              ->orWhere('parent_name', 'like', "%{$request->search}%");
+        });
     }
+
+    // 🎓 فلترة حسب المستوى
+    if ($request->filled('level')) {
+        $query->where('level', $request->level);
+    }
+
+    // 📘 فلترة حسب التخصص
+    if ($request->filled('major')) {
+        $query->where('major', $request->major);
+    }
+
+    // ⚡ نجلب النتائج بترتيب الأحدث مع تقسيم الصفحات
+    $students = $query->latest()->paginate(10);
+
+    // نرسل البيانات للعرض
+    return view('students.index', compact('students'));
+}
+
+    
 
     // عرض فورم إضافة طالب جديد
     public function create()
@@ -117,4 +143,31 @@ class StudentController extends Controller
         $student->delete();
         return redirect()->route('students.index')->with('success', 'تم حذف الطالب');
     }
+
+    // عرض نسخة الطباعة للطلاب
+    public function print(Request $request)
+    {
+        // نفس فلترة البحث الموجودة في index
+        $query = Student::query();
+
+        if ($request->filled('search')) {
+            $query->where(function($q) use ($request) {
+                $q->where('name', 'like', "%{$request->search}%")
+                ->orWhere('parent_name', 'like', "%{$request->search}%");
+            });
+        }
+
+        if ($request->filled('level')) {
+            $query->where('level', $request->level);
+        }
+
+        if ($request->filled('major')) {
+            $query->where('major', $request->major);
+        }
+
+        $students = $query->latest()->get(); // كل النتائج بدون pagination للطباعة
+
+        return view('students.print', compact('students'));
+    }
+
 }
