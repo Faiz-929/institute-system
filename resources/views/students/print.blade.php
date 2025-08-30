@@ -11,6 +11,7 @@
             <table class="min-w-full border text-right">
                 <thead class="bg-gray-200">
                     <tr>
+                        <th class="px-4 py-2">#</th> {{-- عمود الترقيم --}}
                         <th class="px-4 py-2">الصورة</th>
                         <th class="px-4 py-2">الاسم</th>
                         <th class="px-4 py-2">الحالة</th>
@@ -24,6 +25,7 @@
                 <tbody>
                     @foreach($students as $student)
                         <tr class="border-b">
+                            <td>{{ $loop->iteration }}</td>
                             <td class="p-2">
                                 @if($student->photo)
                                     <img src="{{ asset('storage/'.$student->photo) }}" class="h-12 w-12 rounded-full object-cover">

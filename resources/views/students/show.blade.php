@@ -19,7 +19,7 @@
                     @if($student->photo)
                         <img src="{{ asset('storage/'.$student->photo) }}" 
                              alt="صورة الطالب" 
-                             class="w-32 h-32 rounded-full object-cover shadow-md border-4 border-blue-200">
+                             class="w-40 h-40 rounded-full object-cover shadow-md border-4 border-blue-200">
                     @else
                         <div class="w-32 h-32 rounded-full bg-gray-300 flex items-center justify-center text-gray-500 text-3xl shadow-md">
                             ؟

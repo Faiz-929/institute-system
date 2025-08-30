@@ -75,6 +75,7 @@
             <table class="min-w-full text-right">
                 <thead class="bg-gray-100 border-b">
                     <tr>
+                        <th class="px-4 py-2 bg-blue-100 text-blue-800 font-bold text-center">#</th>
                         <th class="px-4 py-2">الصورة</th>
                         <th class="px-4 py-2">الاسم</th>
                         <th class="px-4 py-2">الحالة</th>
@@ -89,6 +90,10 @@
                 <tbody>
                 @forelse($students as $student)
                     <tr class="border-b hover:bg-gray-50">
+                        {{-- الرقم التسلسلي --}}
+    <td class="px-4 py-2 text-center font-semibold text-blue-600">
+        {{ $loop->iteration + ($students->currentPage() - 1) * $students->perPage() }}
+    </td>
                         <td class="p-2">
                             @if($student->photo)
                                 <img src="{{ asset('storage/'.$student->photo) }}" alt="صورة الطالب" class="h-12 w-12 rounded-full object-cover">
