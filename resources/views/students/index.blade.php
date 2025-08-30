@@ -53,12 +53,28 @@
                         <td class="px-4 py-2">{{ $student->major }}</td>
                         <td class="px-4 py-2">{{ $student->mobile_phone }}</td>
                         <td class="px-4 py-2">{{ $student->home_phone }}</td>
-                        <td class="px-4 py-2 space-x-2 whitespace-nowrap">
-                            <a href="{{ route('students.edit', $student) }}" class="bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700">تعديل</a>
-                            <form action="{{ route('students.destroy', $student) }}" method="POST" class="inline-block" onsubmit="return confirm('هل أنت متأكد من حذف هذا الطالب؟');">
+                        <td class="px-4 py-2 space-x-2 whitespace-nowrap flex items-center gap-2">
+                            {{-- زر عرض --}}
+                            <a href="{{ route('students.show', $student) }}" 
+                               class="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700">
+                                عرض
+                            </a>
+
+                            {{-- زر تعديل --}}
+                            <a href="{{ route('students.edit', $student) }}" 
+                               class="bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700">
+                                تعديل
+                            </a>
+
+                            {{-- زر حذف --}}
+                            <form action="{{ route('students.destroy', $student) }}" method="POST" class="inline-block" 
+                                  onsubmit="return confirm('هل أنت متأكد من حذف هذا الطالب؟');">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="bg-red-600 text-white py-2 px-4 rounded hover:bg-red-700">حذف</button>
+                                <button type="submit" 
+                                        class="bg-red-600 text-white py-2 px-4 rounded hover:bg-red-700">
+                                    حذف
+                                </button>
                             </form>
                         </td>
                     </tr>

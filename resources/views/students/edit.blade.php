@@ -17,10 +17,12 @@
             </div>
         @endif
 
-        <form action="{{ route('students.update', $student) }}" method="POST" enctype="multipart/form-data" class="bg-white p-6 rounded shadow space-y-4 text-right">
+        <form action="{{ route('students.update', $student->id) }}" method="POST" enctype="multipart/form-data" 
+              class="bg-white p-6 rounded shadow space-y-4 text-right">
             @csrf
             @method('PUT')
 
+            {{-- ✅ بيانات الطالب --}}
             <div>
                 <label class="block mb-1 font-semibold">اسم الطالب</label>
                 <input type="text" name="name" value="{{ old('name', $student->name) }}" required
@@ -29,8 +31,11 @@
 
             <div>
                 <label class="block mb-1 font-semibold">الحالة</label>
-                <input type="text" name="status" value="{{ old('status', $student->status) }}"
-                       class="w-full border rounded px-3 py-2" placeholder="منتظم، منقطع..." />
+                <select name="status" class="w-full border rounded px-3 py-2">
+                    <option value="">اختر الحالة</option>
+                    <option value="منتظم" {{ old('status', $student->status) == 'منتظم' ? 'selected' : '' }}>منتظم</option>
+                    <option value="منقطع" {{ old('status', $student->status) == 'منقطع' ? 'selected' : '' }}>منقطع</option>
+                </select>
             </div>
 
             <div>
@@ -44,10 +49,12 @@
 
             <div>
                 <label class="block mb-1 font-semibold">صورة الطالب</label>
-                @if($student->photo)
-                    <img src="{{ asset('storage/'.$student->photo) }}" alt="صورة الطالب" class="h-24 w-24 rounded object-cover mb-2">
-                @endif
                 <input type="file" name="photo" accept="image/*" class="w-full" />
+                @if($student->photo)
+                    <div class="mt-2">
+                        <img src="{{ asset('storage/' . $student->photo) }}" alt="صورة الطالب" class="h-20 rounded shadow">
+                    </div>
+                @endif
             </div>
 
             <div>
@@ -91,6 +98,42 @@
                 <textarea name="notes" rows="3" class="w-full border rounded px-3 py-2">{{ old('notes', $student->notes) }}</textarea>
             </div>
 
+            {{-- ✅ بيانات ولي الأمر --}}
+            <div class="border-t pt-4">
+                <h3 class="font-bold text-lg mb-3">بيانات ولي الأمر</h3>
+
+                <div>
+                    <label class="block mb-1 font-semibold">اسم ولي الأمر الرباعي</label>
+                    <input type="text" name="parent_name" value="{{ old('parent_name', $student->parent_name) }}"
+                           class="w-full border rounded px-3 py-2" />
+                </div>
+
+                <div>
+                    <label class="block mb-1 font-semibold">رقم الجوال</label>
+                    <input type="text" name="parent_mobile" value="{{ old('parent_mobile', $student->parent_mobile) }}"
+                           class="w-full border rounded px-3 py-2" />
+                </div>
+
+                <div>
+                    <label class="block mb-1 font-semibold">رقم الواتس</label>
+                    <input type="text" name="parent_whatsapp" value="{{ old('parent_whatsapp', $student->parent_whatsapp) }}"
+                           class="w-full border rounded px-3 py-2" />
+                </div>
+
+                <div>
+                    <label class="block mb-1 font-semibold">رقم البيت</label>
+                    <input type="text" name="parent_home_phone" value="{{ old('parent_home_phone', $student->parent_home_phone) }}"
+                           class="w-full border rounded px-3 py-2" />
+                </div>
+
+                <div>
+                    <label class="block mb-1 font-semibold">الوظيفة</label>
+                    <input type="text" name="parent_job" value="{{ old('parent_job', $student->parent_job) }}"
+                           class="w-full border rounded px-3 py-2" />
+                </div>
+            </div>
+
+            {{-- ✅ الأزرار --}}
             <div class="flex justify-end space-x-2">
                 <a href="{{ route('students.index') }}"
                    class="px-4 py-2 rounded bg-gray-300 hover:bg-gray-400">إلغاء</a>

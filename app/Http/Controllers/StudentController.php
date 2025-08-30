@@ -99,6 +99,13 @@ class StudentController extends Controller
 
         return redirect()->route('students.index')->with('success', 'تم تحديث بيانات الطالب');
     }
+    
+    // عرض بيانات الطالب و ولي الامر
+        public function show(Student $student)
+    {
+        return view('students.show', compact('student'));
+    }
+
 
     // حذف الطالب
     public function destroy(Student $student)
