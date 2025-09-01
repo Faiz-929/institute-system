@@ -181,7 +181,7 @@ public function index(Request $request)
 
         if ($request->filled('search')) {
             $query->where('name', 'like', '%'.$request->search.'%')
-                  ->orWhere('parent_name', 'like', '%'.$request->search.'%');
+                ->orWhere('parent_name', 'like', '%'.$request->search.'%');
         }
 
         if ($request->filled('major')) {
