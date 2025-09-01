@@ -21,7 +21,7 @@
                 <div>
                     <label class="block mb-1 font-semibold">🔍 بحث</label>
                     <input type="text" name="search" value="{{ request('search') }}" placeholder="ابحث باسم الطالب أو ولي الأمر"
-                           class="w-full border rounded px-3 py-2">
+                    class="w-full border rounded px-3 py-2">
                 </div>
 
                 {{-- فلترة حسب التخصص --}}
@@ -55,9 +55,9 @@
                         🔄 إعادة
                     </a>
                     <a href="{{ route('students.print', request()->query()) }}" target="_blank"
-   class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">
-   🖨️ طباعة
-</a>
+                        class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">
+                     🖨️ طباعة
+                    </a>
 
                 </div>
             </form>

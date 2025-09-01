@@ -1,13 +1,21 @@
 <x-app-layout>
     <x-slot name="header">
+        {{-- العنوان ديناميكي بحسب الفلترة --}}
         <h2 class="text-xl font-bold text-center">
-            تقرير الطلاب - المعهد المهني
+            تقرير الطلاب
+            @if(request('level'))
+                | المستوى: {{ request('level') }}
+            @endif
+            @if(request('major'))
+                | التخصص: {{ request('major') }}
+            @endif
         </h2>
     </x-slot>
 
     <div class="py-6 max-w-7xl mx-auto sm:px-6 lg:px-8">
         <div class="bg-white p-6 rounded shadow">
 
+            {{-- جدول عرض الطلاب --}}
             <table class="min-w-full border text-right">
                 <thead class="bg-gray-200">
                     <tr>
@@ -45,13 +53,23 @@
                 </tbody>
             </table>
 
+            {{-- الأزرار في الأسفل --}}
+            <div class="mt-6 flex justify-center gap-4">
+
+                {{-- زر تصدير Excel: يرسل نفس الفلاتر --}}
+                <a href="{{ route('students.print.export', request()->query()) }}"
+                   class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded shadow">
+                    📥 تصدير Excel
+                </a>
+
+                {{-- زر الطباعة --}}
+                <button onclick="window.print()"
+                        class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded shadow">
+                    🖨️ طباعة
+                </button>
+
+            </div>
+
         </div>
     </div>
-
-    {{-- <script>
-        // عند فتح الصفحة يتم تشغيل الطباعة تلقائياً
-        window.onload = function() {
-            window.print();
-        };
-    </script> --}}
 </x-app-layout>

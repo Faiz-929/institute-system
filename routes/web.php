@@ -38,12 +38,15 @@ Route::middleware(['auth'])->group(function () {
 
     // المسار الخاص بطباعة الطلاب
 
-    Route::get('students/print', [StudentController::class, 'print'])->name('students.print');
+   Route::get('students/print', [StudentController::class, 'print'])->name('students.print');
 
     // المسارات الخاصة بالطلاب (CRUD)
     Route::resource('students', StudentController::class);
 
-    
+// 
+// تصدير Excel من صفحة الطباعة
+Route::get('/students/print/export', [StudentController::class, 'printExport'])
+    ->name('students.print.export');
 
 });
 
@@ -55,4 +58,7 @@ Route::middleware('auth')->group(function () {
 });
 
 // مصادقة Laravel Breeze / Jetstream
-require __DIR__.'/auth.php';
+require __DIR__.'/auth.php';    // صفحة الطباعة (مع الفلترة)
+// Route::get('students/print', [StudentController::class, 'print'])
+//     ->name('students.print');
+

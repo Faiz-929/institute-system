@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Student;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Spatie\SimpleExcel\SimpleExcelWriter;
+
 
 class StudentController extends Controller
 {
@@ -168,6 +170,52 @@ public function index(Request $request)
         $students = $query->latest()->get(); // كل النتائج بدون pagination للطباعة
 
         return view('students.print', compact('students'));
+    }
+     /**
+     * تصدير نفس البيانات إلى ملف Excel
+     */
+    public function printExport(Request $request)
+    {
+        // نفس الاستعلام حتى يحافظ على الفلترة
+        $query = Student::query();
+
+        if ($request->filled('search')) {
+            $query->where('name', 'like', '%'.$request->search.'%')
+                  ->orWhere('parent_name', 'like', '%'.$request->search.'%');
+        }
+
+        if ($request->filled('major')) {
+            $query->where('major', $request->major);
+        }
+
+        if ($request->filled('level')) {
+            $query->where('level', $request->level);
+        }
+
+        $students = $query->get();
+
+        // اسم الملف حسب الفلترة
+        $fileName = 'students';
+        if ($request->filled('level')) $fileName .= "_{$request->level}";
+        if ($request->filled('major')) $fileName .= "_{$request->major}";
+        $fileName .= '.xlsx';
+
+        // إنشاء ملف Excel
+        $writer = SimpleExcelWriter::streamDownload($fileName);
+
+        foreach ($students as $student) {
+            $writer->addRow([
+                'الاسم'          => $student->name,
+                'الحالة'         => $student->status,
+                'الجنس'          => $student->gender,
+                'المستوى'        => $student->level,
+                'التخصص'         => $student->major,
+                'جوال ولي الأمر' => $student->parent_mobile,
+                'رقم البيت'      => $student->parent_home_phone,
+            ]);
+        }
+
+        return $writer->toBrowser();
     }
 
 }
