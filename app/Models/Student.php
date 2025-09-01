@@ -27,4 +27,8 @@ class Student extends Model
         'parent_home_phone',
         'parent_job',
     ];
+    
+public function fees() {
+    return $this->hasMany(\App\Models\StudentFee::class);
+}
 }

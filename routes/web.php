@@ -7,20 +7,22 @@ use App\Http\Controllers\StudentController;
 use App\Models\Teacher;
 use Spatie\Health\Http\Controllers\HealthCheckResultsController;
 use Spatie\Health\Models\HealthCheckResultHistoryItem;
+use App\Http\Controllers\StudentFeeController;
+use App\Http\Controllers\FeePaymentController;
 
 Route::get('/', function () {
     return view('welcome'); // الصفحة الرئيسية
 });
-Route::get('/health', HealthCheckResultsController::class);
-Route::get('/my-health', function () {
-    $result = HealthCheckResultHistoryItem::latest()->first();
+// Route::get('/health', HealthCheckResultsController::class);
+// Route::get('/my-health', function () {
+//     $result = HealthCheckResultHistoryItem::latest()->first();
 
-    if (! $result) {
-        return '🚫 لا توجد نتائج حتى الآن، جرّب تشغيل: php artisan health:check';
-    }
+//     if (! $result) {
+//         return '🚫 لا توجد نتائج حتى الآن، جرّب تشغيل: php artisan health:check';
+//     }
 
-    return view('my-health', ['result' => $result]);
-});
+//     return view('my-health', ['result' => $result]);
+// });
 
 Route::middleware(['auth'])->group(function () {
     // لوحة التحكم
@@ -38,7 +40,7 @@ Route::middleware(['auth'])->group(function () {
 
     // المسار الخاص بطباعة الطلاب
 
-   Route::get('students/print', [StudentController::class, 'print'])->name('students.print');
+    Route::get('students/print', [StudentController::class, 'print'])->name('students.print');
 
     // المسارات الخاصة بالطلاب (CRUD)
     Route::resource('students', StudentController::class);
@@ -47,7 +49,12 @@ Route::middleware(['auth'])->group(function () {
 // تصدير Excel من صفحة الطباعة
 Route::get('/students/print/export', [StudentController::class, 'printExport'])
     ->name('students.print.export');
+// مسار دفعات رسوم الطلاب 
+Route::resource('fees', StudentFeeController::class);
 
+    // دفعات الرسوم (مسار متداخل مبسط)
+    Route::post('fees/{fee}/payments', [FeePaymentController::class, 'store'])->name('fees.payments.store');
+    Route::delete('payments/{payment}', [FeePaymentController::class, 'destroy'])->name('fees.payments.destroy');
 });
 
 // إدارة الملف الشخصي للمستخدم
@@ -58,7 +65,5 @@ Route::middleware('auth')->group(function () {
 });
 
 // مصادقة Laravel Breeze / Jetstream
-require __DIR__.'/auth.php';    // صفحة الطباعة (مع الفلترة)
-// Route::get('students/print', [StudentController::class, 'print'])
-//     ->name('students.print');
+require __DIR__.'/auth.php';    
 
