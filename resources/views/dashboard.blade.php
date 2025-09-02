@@ -60,12 +60,16 @@
                 </a>
 
                 <a href="{{ route('students.create') }}"
-                   class="bg-green-100 hover:bg-green-200 transition rounded-xl p-5 shadow text-green-800 font-semibold">
+                class="bg-green-100 hover:bg-green-200 transition rounded-xl p-5 shadow text-green-800 font-semibold">
                     ➕ إضافة طالب
                 </a>
-
+                <!-- رابط رسوم الطلاب -->
+                <a href="{{ route('fees.index') }}"
+                class="bg-purple-100 hover:bg-purple-200 transition rounded-xl p-5 shadow text-purple-800 font-semibold">
+                    💰 رسوم الطلاب
+                </a>
                 {{-- <a href="{{ route('profile.edit') }}"
-                   class="bg-yellow-100 hover:bg-yellow-200 transition rounded-xl p-5 shadow text-yellow-800 font-semibold">
+                class="bg-yellow-100 hover:bg-yellow-200 transition rounded-xl p-5 shadow text-yellow-800 font-semibold">
                     ⚙️ تعديل الملف الشخصي
                 </a>
 
