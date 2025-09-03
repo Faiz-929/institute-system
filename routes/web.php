@@ -9,6 +9,11 @@ use Spatie\Health\Http\Controllers\HealthCheckResultsController;
 use Spatie\Health\Models\HealthCheckResultHistoryItem;
 use App\Http\Controllers\StudentFeeController;
 use App\Http\Controllers\FeePaymentController;
+use App\Http\Controllers\WorkshopController;
+use App\Http\Controllers\ConsumableController;
+use App\Http\Controllers\AssetController;
+use App\Http\Controllers\AssignmentController;
+
 
 Route::get('/', function () {
     return view('welcome'); // الصفحة الرئيسية
@@ -49,12 +54,25 @@ Route::middleware(['auth'])->group(function () {
 // تصدير Excel من صفحة الطباعة
 Route::get('/students/print/export', [StudentController::class, 'printExport'])
     ->name('students.print.export');
+    
 // مسار دفعات رسوم الطلاب 
 Route::resource('fees', StudentFeeController::class);
 
     // دفعات الرسوم (مسار متداخل مبسط)
     Route::post('fees/{fee}/payments', [FeePaymentController::class, 'store'])->name('fees.payments.store');
     Route::delete('payments/{payment}', [FeePaymentController::class, 'destroy'])->name('fees.payments.destroy');
+
+    // مسارات الورش
+    Route::resource('workshops', WorkshopController::class);
+
+    // مسارات اضافة مواد الورش
+    Route::resource('consumables', ConsumableController::class);
+
+    // مسارات الاصول الثابتة
+    Route::resource('assets', AssetController::class);
+
+    // مسارات العهد
+    Route::resource('assignments', AssignmentController::class);
 });
 
 // إدارة الملف الشخصي للمستخدم

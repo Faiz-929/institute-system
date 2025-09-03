@@ -2,63 +2,85 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Workshop;
 use Illuminate\Http\Request;
 
 class WorkshopController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * عرض جميع الورش
      */
     public function index()
     {
-        //
+        $workshops = Workshop::latest()->paginate(10);
+        return view('workshops.index', compact('workshops'));
     }
 
     /**
-     * Show the form for creating a new resource.
+     * عرض فورم إنشاء ورشة
      */
     public function create()
     {
-        //
+        return view('workshops.create');
     }
 
     /**
-     * Store a newly created resource in storage.
+     * تخزين ورشة جديدة
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'location' => 'nullable|string|max:255',
+        ]);
+
+        Workshop::create($request->all());
+
+        return redirect()->route('workshops.index')
+            ->with('success', 'تمت إضافة الورشة بنجاح ✅');
     }
 
     /**
-     * Display the specified resource.
+     * عرض ورشة محددة
      */
-    public function show(string $id)
+    public function show(Workshop $workshop)
     {
-        //
+        return view('workshops.show', compact('workshop'));
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * عرض فورم التعديل
      */
-    public function edit(string $id)
+    public function edit(Workshop $workshop)
     {
-        //
+        return view('workshops.edit', compact('workshop'));
     }
 
     /**
-     * Update the specified resource in storage.
+     * تحديث الورشة
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Workshop $workshop)
     {
-        //
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'location' => 'nullable|string|max:255',
+        ]);
+
+        $workshop->update($request->all());
+
+        return redirect()->route('workshops.index')
+            ->with('success', 'تم تعديل بيانات الورشة ✅');
     }
 
     /**
-     * Remove the specified resource from storage.
+     * حذف ورشة
      */
-    public function destroy(string $id)
+    public function destroy(Workshop $workshop)
     {
-        //
+        $workshop->delete();
+        return redirect()->route('workshops.index')
+            ->with('success', 'تم حذف الورشة بنجاح ❌');
     }
 }

@@ -21,7 +21,6 @@ return new class extends Migration
     $table->timestamps();
 });
 
-
     }
 
     /**
@@ -29,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('consumables');
+        Schema::dropIfExists('assets');
     }
 };
