@@ -13,7 +13,7 @@ use App\Http\Controllers\WorkshopController;
 use App\Http\Controllers\ConsumableController;
 use App\Http\Controllers\AssetController;
 use App\Http\Controllers\AssignmentController;
-
+use App\Http\Controllers\ReportController;
 
 Route::get('/', function () {
     return view('welcome'); // الصفحة الرئيسية
@@ -73,6 +73,13 @@ Route::resource('fees', StudentFeeController::class);
 
     // مسارات العهد
     Route::resource('assignments', AssignmentController::class);
+    
+    // مسار تقارير الورش
+    Route::prefix('reports')->group(function () {
+    Route::get('/consumables', [ReportController::class, 'consumablesByWorkshop'])->name('reports.consumables');
+    Route::get('/assets', [ReportController::class, 'assetsByWorkshop'])->name('reports.assets');
+    Route::get('/assignments', [ReportController::class, 'assignmentsReport'])->name('reports.assignments');
+});
 });
 
 // إدارة الملف الشخصي للمستخدم
