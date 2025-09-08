@@ -32,4 +32,10 @@ class Asset extends Model
     {
         return $this->hasMany(Assignment::class);
     }
+
+    public function stockMovements()
+    {
+        return $this->morphMany(StockMovement::class, 'material');
+    }
+
 }

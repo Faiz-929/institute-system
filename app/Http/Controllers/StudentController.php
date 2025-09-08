@@ -212,7 +212,7 @@ public function index(Request $request)
                 'التخصص'         => $student->major,
                 'جوال ولي الأمر' => $student->parent_mobile,
                 'رقم البيت'      => $student->parent_home_phone,
-            ])
+            ]);
         }
 
         return $writer->toBrowser();

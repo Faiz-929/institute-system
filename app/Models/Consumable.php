@@ -15,4 +15,10 @@ use Illuminate\Database\Eloquent\Model;
     public function assignments() {
         return $this->hasMany(Assignment::class);
     }
+
+    public function stockMovements()
+    {
+        return $this->morphMany(StockMovement::class, 'material');
+    }
+
 }
