@@ -88,5 +88,21 @@
                 </a>
             </div>
         </div>
+    <!-- روابط الدرجات -->
+        <div class="py-12">
+            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 text-right space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <a href="{{ route('grades.index') }}"
+                    class="bg-red-100 hover:bg-red-200 transition rounded-xl p-5 shadow text-red-800 font-semibold">
+                        📊 قائمة الدرجات
+                    </a>
+                    <a href="{{ route('grades.create') }}"
+                    class="bg-green-100 hover:bg-green-200 transition rounded-xl p-5 shadow text-green-800 font-semibold">
+                        ➕ إضافة درجة
+                    </a>
+                </div>
+            </div>
+</div>
+
     </div>
 </x-app-layout>

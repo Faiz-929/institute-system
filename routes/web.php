@@ -14,6 +14,7 @@ use App\Http\Controllers\ConsumableController;
 use App\Http\Controllers\AssetController;
 use App\Http\Controllers\AssignmentController;
 use App\Http\Controllers\ReportController;
+use App\Http\Controllers\GradeController;
 
 Route::get('/', function () {
     return view('welcome'); // الصفحة الرئيسية
@@ -74,6 +75,10 @@ Route::resource('fees', StudentFeeController::class);
     // مسارات العهد
     Route::resource('assignments', AssignmentController::class);
     
+    // مسار الدرجات 
+    Route::resource('grades', GradeController::class);
+
+
     // مسار تقارير الورش
     Route::prefix('reports')->group(function () {
     Route::get('/consumables', [ReportController::class, 'consumablesByWorkshop'])->name('reports.consumables');
