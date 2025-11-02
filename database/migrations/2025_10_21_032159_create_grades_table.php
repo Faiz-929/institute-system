@@ -44,6 +44,10 @@ return new class extends Migration
             $table->string('year')->comment('السنة الدراسية');
 
             $table->timestamps();
+            
+            // فهارس للأداء
+            $table->index(['student_id', 'subject_id', 'semester', 'year']);
+            $table->index('teacher_id');
         });
     }
 

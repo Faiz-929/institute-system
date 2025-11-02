@@ -27,6 +27,7 @@ class Attendance extends Model
         'session_date' => 'date',
         'late_minutes' => 'integer'
     ];
+    protected $table = 'attendance';
 
     // العلاقات
     public function student()
