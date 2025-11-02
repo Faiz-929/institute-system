@@ -15,6 +15,7 @@ use App\Http\Controllers\AssetController;
 use App\Http\Controllers\AssignmentController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\GradeController;
+use App\Http\Controllers\AttendanceController;
 
 Route::get('/', function () {
     return view('welcome'); // الصفحة الرئيسية
@@ -77,6 +78,11 @@ Route::resource('fees', StudentFeeController::class);
     
     // مسار الدرجات 
     Route::resource('grades', GradeController::class);
+
+    Route::get('/attendance', [AttendanceController::class, 'index'])->name('attendance.index');
+    Route::post('/attendance/bulk-store', [AttendanceController::class, 'bulkStore'])->name('attendance.bulk-store');
+    Route::get('/attendance/reports', [AttendanceController::class, 'reports'])->name('attendance.reports');
+
 
 
     // مسار تقارير الورش
