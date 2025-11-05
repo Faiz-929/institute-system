@@ -8,6 +8,7 @@ use App\Models\Teacher;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
 
 class AttendanceController extends Controller
@@ -75,9 +76,10 @@ class AttendanceController extends Controller
             ]);
 
         } catch (\Exception $e) {
+            Log::error('Attendance store error', ['exception' => $e]);
             return response()->json([
                 'success' => false,
-                'message' => 'حدث خطأ أثناء تسجيل الحضور: ' . $e->getMessage()
+                'message' => 'حدث خطأ أثناء تسجيل الحضور'
             ], 500);
         }
     }
@@ -88,6 +90,9 @@ class AttendanceController extends Controller
         $request->validate([
             'attendance_data' => 'required|array',
             'attendance_data.*.student_id' => 'required|exists:students,id',
+            'attendance_data.*.status' => 'nullable|in:حاضر,غائب,متأخر,مُعفى',
+            'attendance_data.*.late_minutes' => 'nullable|integer|min:0',
+            'attendance_data.*.absence_reason' => 'nullable|string|max:255',
             'teacher_id' => 'required|exists:teachers,id',
             'subject_name' => 'required|string|max:255',
             'class_name' => 'required|string|max:255',
@@ -132,7 +137,9 @@ class AttendanceController extends Controller
 
                     $successCount++;
                 } catch (\Exception $e) {
-                    $errors[] = "خطأ في تسجيل الطالب " . $data['student_id'] . ": " . $e->getMessage();
+                    // Log full exception server-side, store a generic message for client
+                    Log::error('Attendance bulkStore error for student '.$data['student_id'], ['exception' => $e]);
+                    $errors[] = "خطأ في تسجيل الطالب " . $data['student_id'] . ": حدث خطأ داخلي";
                 }
             }
 
@@ -146,6 +153,7 @@ class AttendanceController extends Controller
 
         } catch (\Exception $e) {
             DB::rollback();
+            Log::error('Attendance bulkStore transaction failed', ['exception' => $e]);
             return response()->json([
                 'success' => false,
                 'message' => 'حدث خطأ أثناء تسجيل الحضور الجماعي'
@@ -239,22 +247,8 @@ class AttendanceController extends Controller
         $dateTo = $request->get('date_to');
 
         try {
-            $stats = Attendance::getAttendanceStats($studentId, $teacherId, $subject);
-            
-            if ($dateFrom && $dateTo) {
-                $query = Attendance::query();
-                
-                if ($studentId) $query->where('student_id', $studentId);
-                if ($teacherId) $query->where('teacher_id', $teacherId);
-                if ($subject) $query->where('subject_name', $subject);
-                
-                $query->whereBetween('session_date', [$dateFrom, $dateTo]);
-                
-                $total = $query->count();
-                $present = $query->where('status', 'حاضر')->count();
-                
-                $stats['percentage'] = $total > 0 ? round(($present / $total) * 100, 2) : 0;
-            }
+            // Let the model compute stats; pass date range to include date filtering
+            $stats = Attendance::getAttendanceStats($studentId, $teacherId, $subject, $dateFrom, $dateTo);
 
             return response()->json([
                 'success' => true,

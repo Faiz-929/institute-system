@@ -65,46 +65,62 @@ class Attendance extends Model
     public static function getAttendancePercentage($studentId, $subject = null, $dateFrom = null, $dateTo = null)
     {
         $query = self::where('student_id', $studentId);
-        
+
         if ($subject) {
             $query->where('subject_name', $subject);
         }
-        
+
         if ($dateFrom && $dateTo) {
             $query->whereBetween('session_date', [$dateFrom, $dateTo]);
         }
-        
-        $totalSessions = $query->count();
+
+        // Use clones so each count is executed from the same base query
+        $totalSessions = (clone $query)->count();
         if ($totalSessions === 0) return 0;
-        
-        $presentSessions = $query->where('status', 'حاضر')->count();
-        
+
+        $presentSessions = (clone $query)->where('status', 'حاضر')->count();
+
         return round(($presentSessions / $totalSessions) * 100, 2);
     }
 
     // دالة للحصول على إحصائيات الحضور
-    public static function getAttendanceStats($studentId = null, $teacherId = null, $subject = null)
+    /**
+     * Get attendance statistics. Optional date range supported.
+     *
+     * @param  int|null  $studentId
+     * @param  int|null  $teacherId
+     * @param  string|null  $subject
+     * @param  string|null  $dateFrom
+     * @param  string|null  $dateTo
+     * @return array
+     */
+    public static function getAttendanceStats($studentId = null, $teacherId = null, $subject = null, $dateFrom = null, $dateTo = null)
     {
         $query = self::query();
-        
+
         if ($studentId) {
             $query->where('student_id', $studentId);
         }
-        
+
         if ($teacherId) {
             $query->where('teacher_id', $teacherId);
         }
-        
+
         if ($subject) {
             $query->where('subject_name', $subject);
         }
-        
-        $total = $query->count();
-        $present = $query->where('status', 'حاضر')->count();
-        $absent = $query->where('status', 'غائب')->count();
-        $late = $query->where('status', 'متأخر')->count();
-        $excused = $query->where('status', 'مُعفى')->count();
-        
+
+        if ($dateFrom && $dateTo) {
+            $query->whereBetween('session_date', [$dateFrom, $dateTo]);
+        }
+
+        // Clone the query for each aggregate so filters don't accumulate
+        $total = (clone $query)->count();
+        $present = (clone $query)->where('status', 'حاضر')->count();
+        $absent = (clone $query)->where('status', 'غائب')->count();
+        $late = (clone $query)->where('status', 'متأخر')->count();
+        $excused = (clone $query)->where('status', 'مُعفى')->count();
+
         return [
             'total' => $total,
             'present' => $present,
