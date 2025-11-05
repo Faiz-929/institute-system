@@ -67,7 +67,7 @@ class AttendanceController extends Controller
                 'absence_reason' => $request->absence_reason,
                 'late_minutes' => $request->late_minutes,
                 'notes' => $request->notes,
-                'recorded_by' => auth()->check() && auth()->user()->role === 'admin' ? 'admin' : 'teacher'
+                'recorded_by' => (auth()->guard()->check() && auth()->guard()->user() && auth()->guard()->user()->role === 'admin') ? 'admin' : 'teacher'
             ]);
 
             return response()->json([
