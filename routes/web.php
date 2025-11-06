@@ -20,6 +20,8 @@ use App\Http\Controllers\AttendanceController;
 Route::get('/', function () {
     return view('welcome'); // الصفحة الرئيسية
 });
+
+// (preview route removed) 
 // Route::get('/health', HealthCheckResultsController::class);
 // Route::get('/my-health', function () {
 //     $result = HealthCheckResultHistoryItem::latest()->first();

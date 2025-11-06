@@ -166,15 +166,17 @@ class AttendanceController extends Controller
     {
         $reportType = $request->get('type', 'daily'); // daily, weekly, monthly, student
         $date = $request->get('date', Carbon::now()->format('Y-m-d'));
+        $dateFrom = $request->get('date_from');
+        $dateTo = $request->get('date_to');
         $studentId = $request->get('student_id');
         $subject = $request->get('subject');
         $teacherId = $request->get('teacher_id');
 
         $data = [];
-        
+
         switch ($reportType) {
             case 'daily':
-                $data = $this->getDailyReport($date, $subject, $teacherId);
+                $data = $this->getDailyReport($date, $subject, $teacherId, $dateFrom, $dateTo);
                 break;
             case 'student':
                 $data = $this->getStudentReport($studentId, $subject);
@@ -183,29 +185,35 @@ class AttendanceController extends Controller
                 $data = $this->getTeacherReport($teacherId, $date);
                 break;
             default:
-                $data = $this->getDailyReport($date);
+                $data = $this->getDailyReport($date, null, null, $dateFrom, $dateTo);
         }
 
         $students = Student::orderBy('name')->get();
         $teachers = Teacher::orderBy('name')->get();
-        
-        return view('attendance.reports', compact('data', 'reportType', 'date', 'studentId', 'subject', 'teacherId', 'students', 'teachers'));
+
+        return view('attendance.reports', compact('data', 'reportType', 'date', 'dateFrom', 'dateTo', 'studentId', 'subject', 'teacherId', 'students', 'teachers'));
     }
 
     // تقرير يومي
-    private function getDailyReport($date, $subject = null, $teacherId = null)
+    private function getDailyReport($date = null, $subject = null, $teacherId = null, $dateFrom = null, $dateTo = null)
     {
-        $query = Attendance::with(['student', 'teacher'])
-                          ->whereDate('session_date', $date);
-        
+        $query = Attendance::with(['student', 'teacher']);
+
+        // إذا تم تحديد فترة زمنية
+        if ($dateFrom && $dateTo) {
+            $query->whereBetween('session_date', [$dateFrom, $dateTo]);
+        } elseif ($date) {
+            $query->whereDate('session_date', $date);
+        }
+
         if ($subject) {
             $query->where('subject_name', $subject);
         }
-        
+
         if ($teacherId) {
             $query->where('teacher_id', $teacherId);
         }
-        
+
         return $query->orderBy('session_time')->get();
     }
 
