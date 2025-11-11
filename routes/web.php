@@ -80,6 +80,11 @@ Route::resource('fees', StudentFeeController::class);
     
     // مسار الدرجات 
     Route::resource('grades', GradeController::class);
+    
+    // مسارات إضافية للدرجات
+    Route::get('/grades/export', [GradeController::class, 'export'])->name('grades.export');
+    Route::get('/grades/reports', [GradeController::class, 'reports'])->name('grades.reports');
+    Route::get('/grades/student/{student}/stats', [GradeController::class, 'studentStats'])->name('grades.student-stats');
 
     Route::get('/attendance', [AttendanceController::class, 'index'])->name('attendance.index');
     Route::post('/attendance/bulk-store', [AttendanceController::class, 'bulkStore'])->name('attendance.bulk-store');

@@ -21,6 +21,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role',
     ];
 
     /**
@@ -44,5 +45,27 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    // دوال مساعدة للأدوار
+    public function isTeacher()
+    {
+        return $this->role === 'teacher' || $this->role === 'admin';
+    }
+
+    public function isAdmin()
+    {
+        return $this->role === 'admin';
+    }
+
+    // العلاقات
+    public function grades()
+    {
+        return $this->hasMany(Grade::class, 'teacher_id');
+    }
+
+    public function subjects()
+    {
+        return $this->belongsToMany(Subject::class, 'subject_teacher');
     }
 }

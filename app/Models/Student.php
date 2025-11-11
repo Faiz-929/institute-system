@@ -31,4 +31,31 @@ class Student extends Model
 public function fees() {
     return $this->hasMany(\App\Models\StudentFee::class);
 }
+
+public function grades()
+{
+    return $this->hasMany(Grade::class);
+}
+
+// دوال مساعدة لحساب الإحصائيات
+public function getAverageGradeAttribute()
+{
+    return $this->grades()->avg('total') ?? 0;
+}
+
+public function getPassedGradesCountAttribute()
+{
+    return $this->grades()->where('total', '>=', 50)->count();
+}
+
+public function getTotalGradesCountAttribute()
+{
+    return $this->grades()->count();
+}
+
+public function getSuccessRateAttribute()
+{
+    $total = $this->total_grades_count;
+    return $total > 0 ? ($this->passed_grades_count / $total) * 100 : 0;
+}
 }

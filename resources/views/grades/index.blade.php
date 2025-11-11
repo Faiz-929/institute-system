@@ -17,11 +17,16 @@
                 <x-icon-print />
                 <span>طباعة</span>
             </button>
-            <button onclick="exportToExcel()" 
-                    class="inline-flex items-center gap-2 px-6 py-2.5 bg-primary-600 hover:bg-primary-700 text-white font-medium rounded-lg transition-colors shadow-sm">
+            <a href="{{ route('grades.export', request()->query()) }}" 
+               class="inline-flex items-center gap-2 px-6 py-2.5 bg-primary-600 hover:bg-primary-700 text-white font-medium rounded-lg transition-colors shadow-sm">
                 <x-icon-download />
                 <span>تصدير Excel</span>
-            </button>
+            </a>
+            <a href="{{ route('grades.reports') }}" 
+               class="inline-flex items-center gap-2 px-6 py-2.5 bg-info-600 hover:bg-info-700 text-white font-medium rounded-lg transition-colors shadow-sm">
+                <x-icon-reports />
+                <span>التقارير</span>
+            </a>
         </div>
 
         <!-- إحصائيات سريعة -->
@@ -46,13 +51,51 @@
 
     <!-- فلاتر البحث -->
     <div class="bg-white rounded-xl shadow-soft p-6 mb-6">
-        <form method="GET" action="{{ route('grades.index') }}" class="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <form method="GET" action="{{ route('grades.index') }}" class="grid grid-cols-1 md:grid-cols-6 gap-4">
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">الطالب</label>
+                <select name="student_id" class="block w-full border-gray-300 rounded-lg focus:ring-primary-500 focus:border-primary-500">
+                    <option value="">جميع الطلاب</option>
+                    @foreach($students ?? [] as $student)
+                        <option value="{{ $student->id }}" {{ request('student_id') == $student->id ? 'selected' : '' }}>
+                            {{ $student->name }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">المادة</label>
+                <select name="subject_id" class="block w-full border-gray-300 rounded-lg focus:ring-primary-500 focus:border-primary-500">
+                    <option value="">جميع المواد</option>
+                    @foreach($subjects ?? [] as $subject)
+                        <option value="{{ $subject->id }}" {{ request('subject_id') == $subject->id ? 'selected' : '' }}>
+                            {{ $subject->name }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">المعلم</label>
+                <select name="teacher_id" class="block w-full border-gray-300 rounded-lg focus:ring-primary-500 focus:border-primary-500">
+                    <option value="">جميع المعلمين</option>
+                    @foreach($teachers ?? [] as $teacher)
+                        <option value="{{ $teacher->id }}" {{ request('teacher_id') == $teacher->id ? 'selected' : '' }}>
+                            {{ $teacher->name }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
+
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">الفصل الدراسي</label>
                 <select name="semester" class="block w-full border-gray-300 rounded-lg focus:ring-primary-500 focus:border-primary-500">
                     <option value="">جميع الفصول</option>
                     <option value="الأول" {{ request('semester') == 'الأول' ? 'selected' : '' }}>الفصل الأول</option>
                     <option value="الثاني" {{ request('semester') == 'الثاني' ? 'selected' : '' }}>الفصل الثاني</option>
+                    <option value="الثالث" {{ request('semester') == 'الثالث' ? 'selected' : '' }}>الفصل الثالث</option>
+                    <option value="الرابع" {{ request('semester') == 'الرابع' ? 'selected' : '' }}>الفصل الرابع</option>
                 </select>
             </div>
 
@@ -60,7 +103,7 @@
                 <label class="block text-sm font-medium text-gray-700 mb-2">السنة الدراسية</label>
                 <select name="year" class="block w-full border-gray-300 rounded-lg focus:ring-primary-500 focus:border-primary-500">
                     <option value="">جميع السنوات</option>
-                    @foreach(range(date('Y') - 5, date('Y')) as $year)
+                    @foreach(range(date('Y') - 5, date('Y') + 1) as $year)
                         <option value="{{ $year }}" {{ request('year') == $year ? 'selected' : '' }}>{{ $year }}</option>
                     @endforeach
                 </select>
@@ -75,7 +118,7 @@
                 </select>
             </div>
 
-            <div class="flex items-end gap-2">
+            <div class="flex items-end gap-2 col-span-2">
                 <button type="submit" class="flex-1 px-4 py-2.5 bg-primary-600 hover:bg-primary-700 text-white rounded-lg transition-colors">
                     تطبيق
                 </button>
@@ -97,6 +140,7 @@
                         <th class="px-6 py-4 text-right text-xs font-semibold text-gray-600 uppercase tracking-wider">المادة</th>
                         <th class="px-6 py-4 text-right text-xs font-semibold text-gray-600 uppercase tracking-wider">المعلم</th>
                         <th class="px-6 py-4 text-right text-xs font-semibold text-gray-600 uppercase tracking-wider">المجموع</th>
+                        <th class="px-6 py-4 text-right text-xs font-semibold text-gray-600 uppercase tracking-wider">التقدير</th>
                         <th class="px-6 py-4 text-right text-xs font-semibold text-gray-600 uppercase tracking-wider">الحالة</th>
                         <th class="px-6 py-4 text-right text-xs font-semibold text-gray-600 uppercase tracking-wider">الفصل</th>
                         <th class="px-6 py-4 text-right text-xs font-semibold text-gray-600 uppercase tracking-wider">السنة</th>
@@ -129,6 +173,14 @@
                                        ($grade->total >= 75 ? 'bg-primary-100 text-primary-800' : 
                                        ($grade->total >= 50 ? 'bg-warning-100 text-warning-800' : 'bg-danger-100 text-danger-800')) }}">
                                     {{ $grade->total }}
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold
+                                    {{ $grade->total >= 90 ? 'bg-purple-100 text-purple-800' : 
+                                       ($grade->total >= 75 ? 'bg-blue-100 text-blue-800' : 
+                                       ($grade->total >= 50 ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800')) }}">
+                                    {{ $grade->grade }}
                                 </span>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
@@ -178,7 +230,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="9" class="px-6 py-12 text-center">
+                            <td colspan="10" class="px-6 py-12 text-center">
                                 <div class="flex flex-col items-center gap-3">
                                     <x-icon-grades class="w-16 h-16 text-gray-300" />
                                     <p class="text-gray-500 font-medium">لا توجد درجات حتى الآن</p>
