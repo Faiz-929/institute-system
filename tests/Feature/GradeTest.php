@@ -7,6 +7,7 @@ use App\Models\Student;
 use App\Models\Subject;
 use App\Models\Grade;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class GradeTest extends TestCase
@@ -25,8 +26,8 @@ class GradeTest extends TestCase
         $this->actingAs($this->user);
     }
 
-    /** @test */
-    public function can_create_grade()
+    #[Test]
+    public function can_create_grade(): void
     {
         // إنشاء بيانات اختبار
         $student = Student::factory()->create();
@@ -82,8 +83,8 @@ class GradeTest extends TestCase
         $this->assertEquals($expectedTotal, $grade->total);
     }
 
-    /** @test */
-    public function grade_total_cannot_exceed_100()
+    #[Test]
+    public function grade_total_cannot_exceed_100(): void
     {
         $student = Student::factory()->create();
         $subject = Subject::factory()->create();
@@ -117,8 +118,8 @@ class GradeTest extends TestCase
         $this->assertEquals(100, $grade->total);
     }
 
-    /** @test */
-    public function cannot_create_duplicate_grade()
+    #[Test]
+    public function cannot_create_duplicate_grade(): void
     {
         $student = Student::factory()->create();
         $subject = Subject::factory()->create();
@@ -146,8 +147,8 @@ class GradeTest extends TestCase
         $response->assertSessionHasErrors(['duplicate']);
     }
 
-    /** @test */
-    public function grade_filtering_works()
+    #[Test]
+    public function grade_filtering_works(): void
     {
         $student = Student::factory()->create();
         $subject = Subject::factory()->create();
